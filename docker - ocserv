@@ -1,0 +1,32 @@
+### 安装docker ###
+# Add Docker's official GPG key:
+apt-get update
+apt-get install ca-certificates curl
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  tee /etc/apt/sources.list.d/docker.list > /dev/null
+apt-get update
+
+###安装ocserv镜像###
+docker run -d \
+    --name=ocserv \
+    --restart=always \
+    --sysctl=net.ipv4.ip_forward=1 \
+    --cap-add=NET_ADMIN \
+    --security-opt=no-new-privileges \
+    -p 23556:23556 \
+    -p 12446:12446/udp \
+    stilleshan/ocserv
+
+
+###开放端口###
+ufw allow 23556
+ufw allow 12446
+
+###替换配置###
